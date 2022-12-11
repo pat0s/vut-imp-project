@@ -55,6 +55,7 @@ const char* htmlCode() {
               input[type='checkbox'] { \
                   appearance: none; \
                   display: grid; \
+                  margin: 0; \
               } \
               input[type='checkbox']::before { \
                   content: ' '; \
@@ -367,7 +368,14 @@ const char* htmlCode() {
                       <input type='checkbox' name='15-15' id=''> \
                     </div> \
                   </div> \
-                  <br><br><br> \
+                  <br><br> \
+                  <label for='chooseColor'>Choose a color:</label> \
+                  <select name='textColor' id='chooseColor'> \
+                    <option value='0'>Red</option> \
+                    <option value='1'>Green</option> \
+                    <option value='2'>Blue</option> \
+                    <option value='3'>White</option> \
+                  </select> \
                   <input type='submit' value='Draw'> \
               </form> \
           </body> \
@@ -424,15 +432,16 @@ void displayTextAction() {
 /**
  * @brief Draw pixel 9x9
  * 
- * @param x
- * @param y
+ * @param x 
+ * @param y 
+ * @param color 
  */
-void drawPixel(int x, int y) {
+void drawPixel(int x, int y, int color) {
   x *= 8;
   y *= 8;
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      tft.drawPixel(x + i, y + j, ST7735_WHITE);
+      tft.drawPixel(x + i, y + j, color);
     }
   }
 }
@@ -443,14 +452,36 @@ void drawPixel(int x, int y) {
  */
 void drawAction() {
   clearScreen();
+  
   char name[10];
+  int color = ST7735_WHITE;
+
+  if (server.hasArg("textColor")) {
+    switch (server.arg("textColor").toInt())
+    {
+    case 0:
+      color = ST7735_RED;
+      break;
+    case 1:
+      color = ST7735_GREEN;
+      break;
+    case 2:
+      color = ST7735_BLUE;
+      break;
+    case 3:
+      color = ST7735_WHITE;
+      break;
+    default:
+      break;
+    }
+  }
 
   for (int y=0; y<16; y++) {
     for (int x=0; x<16; x++) {
       sprintf(name, "%d-%d", y, x);      
       
       if (server.hasArg(name)) {
-          drawPixel(x, y);
+          drawPixel(x, y, color);
       }
     }
   }
