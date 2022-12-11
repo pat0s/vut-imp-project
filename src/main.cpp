@@ -381,6 +381,7 @@ const char* htmlCode() {
 void clearScreen() {
   tft.setCursor(0, 0);
   tft.fillScreen(ST7735_BLACK);
+  tft.setTextColor(ST7735_WHITE);
   tft.setTextSize(1);
 }
 
@@ -402,7 +403,7 @@ void connectToWifi() {
  * @brief Load index page
  * 
  */
-void indexPage() {
+void indexPageAction() {
   server.send(200, "text/html", htmlCode());
 }
 
@@ -410,7 +411,7 @@ void indexPage() {
  * @brief Display text and redirect to index page
  * 
  */
-void displayText() {
+void displayTextAction() {
   clearScreen();
 
   tft.setTextSize(2);
@@ -440,15 +441,14 @@ void drawPixel(int x, int y) {
  * @brief Draw image and redirect to index page
  * 
  */
-void draw() {
+void drawAction() {
   clearScreen();
-
   char name[10];
 
   for (int y=0; y<16; y++) {
     for (int x=0; x<16; x++) {
-      
       sprintf(name, "%d-%d", y, x);      
+      
       if (server.hasArg(name)) {
           drawPixel(x, y);
       }
@@ -464,9 +464,9 @@ void draw() {
  * 
  */
 void routings() {
-  server.on("/", indexPage);
-  server.on("/text", HTTP_POST, displayText);
-  server.on("/draw", HTTP_POST, draw);
+  server.on("/", indexPageAction);
+  server.on("/text", HTTP_POST, displayTextAction);
+  server.on("/draw", HTTP_POST, drawAction);
 }
 
 void setup(void) {
@@ -474,25 +474,21 @@ void setup(void) {
 
   tft.initR(INITR_144GREENTAB); // Init ST7735R chip, green tab
 
-  // display text
+  // Display text
   clearScreen();
   tft.println("Connecting to ");
   tft.setTextColor(ST7735_BLUE);
   tft.setTextSize(2);
   tft.println(ssid);
-  tft.setTextColor(ST7735_WHITE);
-  tft.setTextSize(1);
 
   connectToWifi();
 
-  // display text
+  // Display text
   clearScreen();
   tft.println("Connected!");
   tft.setTextColor(ST7735_BLUE);
   tft.setTextSize(2);
   tft.println(WiFi.localIP());
-  tft.setTextColor(ST7735_WHITE);
-  tft.setTextSize(1);
 
   routings();
   
