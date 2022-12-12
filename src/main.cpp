@@ -1,11 +1,10 @@
 /**
  * @file main.cpp
- * @author Patrik Sehnoutek <xsehno01@studis.fit.vutbr.cz>
- * @brief ESP32 with display
+ * @author Patrik Sehnoutek <xsehno01@stud.fit.vutbr.cz>
+ * @brief ESP32 with TFT display
  * @date 2022-12-11
  * 
  * @copyright Copyright (c) 2022
- * 
  */
 
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -19,13 +18,11 @@
 #define TFT_RST     17 
 #define TFT_DC      2
 
-// For 1.44" and 1.8" TFT with ST7735 use:
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
-
-// Wifi configuration
+// WiFi configuration
 const char* ssid = "Dalík";
 const char* password = "123456789";
 
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 WebServer server(80);
 
 /**
@@ -446,7 +443,7 @@ void displayTextAction() {
 }
 
 /**
- * @brief Draw pixel 9x9
+ * @brief Draw pixel 8x8
  * 
  * @param x 
  * @param y 
