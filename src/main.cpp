@@ -383,7 +383,7 @@ const char* htmlCode() {
 }
 
 /**
- * @brief Clear scree, set default position and size of cursor.
+ * @brief Clear screen, set default position and size of cursor.
  * 
  */
 void clearScreen() {
@@ -392,6 +392,22 @@ void clearScreen() {
   tft.setTextColor(ST7735_WHITE);
   tft.setTextSize(1);
 }
+
+/**
+ * @brief Print formated text
+ * 
+ * @param label 
+ * @param text 
+ */
+void printText(const char* label, const char *text) {
+  clearScreen();
+
+  tft.println(label);
+  tft.setTextColor(ST7735_GREEN);
+  tft.setTextSize(2);
+  tft.println(text);
+}
+
 
 /**
  * @brief Connect to wifi
@@ -476,8 +492,8 @@ void drawAction() {
     }
   }
 
-  for (int y=0; y<16; y++) {
-    for (int x=0; x<16; x++) {
+  for (int y = 0; y < 16; y++) {
+    for (int x = 0; x < 16; x++) {
       sprintf(name, "%d-%d", y, x);      
       
       if (server.hasArg(name)) {
@@ -494,7 +510,7 @@ void drawAction() {
  * @brief Set up routings
  * 
  */
-void routings() {
+void setUpRoutings() {
   server.on("/", indexPageAction);
   server.on("/text", HTTP_POST, displayTextAction);
   server.on("/draw", HTTP_POST, drawAction);
@@ -502,41 +518,19 @@ void routings() {
 
 void setup(void) {
   Serial.begin(115200);
-
   tft.initR(INITR_144GREENTAB); // Init ST7735R chip, green tab
-
-  // Display text
-  clearScreen();
-  tft.println("Connecting to ");
-  tft.setTextColor(ST7735_BLUE);
-  tft.setTextSize(2);
-  tft.println(ssid);
-
+  
+  printText("Connecting to", ssid);
   connectToWifi();
 
-  // Display text
-  clearScreen();
-  tft.println("Connected!");
-  tft.setTextColor(ST7735_BLUE);
-  tft.setTextSize(2);
-  tft.println(WiFi.localIP());
-
-  routings();
+  char buf[16];
+  WiFi.localIP().toString().toCharArray(buf, sizeof(buf));
+  printText("Connected!", (const char *)buf);
   
+  setUpRoutings();
   server.begin();
 }
 
 void loop() {
   server.handleClient();
 }
-
-// LINKS
-// https://www.hackster.io/electropeak/create-a-web-server-w-esp32-tutorial-a9a392
-// https://github.com/arduino-libraries/WiFi/tree/master/docs
-// https://www.laskakit.cz/128x128-barevny-lcd-tft-displej-1-44--v1-1--spi/
-
-// https://github.com/adafruit/Adafruit-ST7735-Library/blob/master/Adafruit_ST7735.h
-// https://github.com/adafruit/Adafruit-GFX-Library/blob/master/Adafruit_GFX.h
-
-// GET and POST routingy
-// https://microcontrollerslab.com/esp32-rest-api-web-server-get-post-postman/
