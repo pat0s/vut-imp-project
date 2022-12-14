@@ -1,2 +1,3 @@
-# vut-imp-project
-ESP32: Demonstrace ovládání OLED displeje přes WiFi/Bluetooth
+# ESP32: Demonstrace ovládání TFT displeje přes WiFi/Bluetooth
+**Author:** Patrik Sehnoutek \
+**Date:** 14.12.2022
